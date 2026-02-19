@@ -1,0 +1,37 @@
+{% extends 'home/base.html' %}
+
+{% block title %}Server Error - Safar{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12 text-center">
+            <div class="mb-4">
+                <i class="fas fa-exclamation-circle fa-5x text-danger mb-4"></i>
+                <h1 class="display-1">500</h1>
+                <h2 class="mb-3">Server Error</h2>
+                <p class="lead text-muted mb-4">Something went wrong on our end. We're working to fix this issue.</p>
+            </div>
+
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{% url 'home:index' %}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-home me-2"></i>Go Home
+                </a>
+                <button onclick="window.location.reload()" class="btn btn-outline-primary btn-lg">
+                    <i class="fas fa-redo me-2"></i>Try Again
+                </button>
+                <a href="{% url 'home:contact' %}" class="btn btn-outline-secondary btn-lg">
+                    <i class="fas fa-envelope me-2"></i>Report Issue
+                </a>
+            </div>
+
+            <div class="mt-5">
+                <div class="alert alert-info">
+                    <h6><i class="fas fa-info-circle me-2"></i>What happened?</h6>
+                    <p class="mb-0">Our server encountered an unexpected error. This might be due to high traffic or a temporary issue. Please try again in a few moments.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,193 @@
+{% extends 'home/base.html' %}
+
+{% block title %}My Profile - Safar{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user me-2"></i>
+                        My Profile
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center mb-4">
+                            {% if user.userprofile.profile_picture %}
+                                <img src="{{ user.userprofile.profile_picture.url }}" alt="Profile Picture" class="rounded-circle img-fluid mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                            {% else %}
+                                <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 150px; height: 150px;">
+                                    <i class="fas fa-user fa-3x text-muted"></i>
+                                </div>
+                            {% endif %}
+                            <h6>{{ user.get_full_name|default:user.username }}</h6>
+                            <p class="text-muted">{{ user.email }}</p>
+                            <a href="{% url 'home:edit_profile' %}" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-edit me-1"></i>Edit Profile
+                            </a>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label text-muted">Username</label>
+                                        <p class="mb-0">{{ user.username }}</p>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label text-muted">Email</label>
+                                        <p class="mb-0">{{ user.email }}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% if user.userprofile.bio %}
+                                <div class="mb-3">
+                                    <label class="form-label text-muted">Bio</label>
+                                    <p class="mb-0">{{ user.userprofile.bio }}</p>
+                                </div>
+                            {% endif %}
+
+                            {% if user.userprofile.phone_number %}
+                                <div class="mb-3">
+                                    <label class="form-label text-muted">Phone</label>
+                                    <p class="mb-0">{{ user.userprofile.phone_number }}</p>
+                                </div>
+                            {% endif %}
+
+                            {% if user.userprofile.location %}
+                                <div class="mb-3">
+                                    <label class="form-label text-muted">Location</label>
+                                    <p class="mb-0">{{ user.userprofile.location }}</p>
+                                </div>
+                            {% endif %}
+
+                            <div class="mb-3">
+                                <label class="form-label text-muted">Member Since</label>
+                                <p class="mb-0">{{ user.date_joined|date:"F j, Y" }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trip Statistics -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        Travel Statistics
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <h4 class="text-primary">{{ trips|length }}</h4>
+                            <p class="mb-0">Trips Planned</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h4 class="text-success">{{ trips|length }}</h4>
+                            <p class="mb-0">Destinations Visited</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h4 class="text-info">{{ reviews|length }}</h4>
+                            <p class="mb-0">Reviews Written</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h4 class="text-warning">0</h4>
+                            <p class="mb-0">Vlogs Watched</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Trips Section -->
+            <div class="card mt-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">
+                        <i class="fas fa-suitcase me-2"></i>
+                        My Trips
+                    </h6>
+                    <a href="{% url 'home:create_trip' %}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus me-1"></i>Create Trip
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if trips %}
+                        <div class="row">
+                            {% for trip in trips %}
+                                <div class="col-md-6 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h6 class="card-title">{{ trip.title }}</h6>
+                                            <p class="card-text small text-muted">{{ trip.description|truncatechars:100 }}</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-muted">
+                                                    {{ trip.start_date|date:"M d" }} - {{ trip.end_date|date:"M d, Y" }}
+                                                </small>
+                                                <a href="{% url 'home:trip_detail' trip.pk %}" class="btn btn-outline-primary btn-sm">View</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="{% url 'home:my_trips' %}" class="btn btn-outline-primary">View All Trips</a>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-suitcase fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">You haven't created any trips yet.</p>
+                            <a href="{% url 'home:create_trip' %}" class="btn btn-primary">Create Your First Trip</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- My Reviews Section -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-star me-2"></i>
+                        My Reviews
+                    </h6>
+                </div>
+                <div class="card-body">
+                    {% if reviews %}
+                        <div class="row">
+                            {% for review in reviews %}
+                                <div class="col-md-6 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h6 class="card-title">{{ review.title }}</h6>
+                                            <div class="rating-stars mb-2">
+                                                {% for i in "12345"|make_list %}
+                                                <i class="fas fa-star{% if forloop.counter > review.rating %}-o{% endif %}"></i>
+                                                {% endfor %}
+                                                <span class="ms-2">{{ review.rating }}/5</span>
+                                            </div>
+                                            <p class="card-text small">{{ review.content|truncatechars:100 }}</p>
+                                            <small class="text-muted">For {{ review.destination.name }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-star fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">You haven't written any reviews yet.</p>
+                            <a href="{% url 'home:destinations' %}" class="btn btn-primary">Explore Destinations</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends 'home/base.html' %}
+
+{% block title %}Destinations - Safar{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center mb-4">Explore Destinations</h1>
+
+            <!-- Search and Filter Form -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="GET" class="row g-3">
+                        <div class="col-md-4">
+                            <input type="text" name="q" class="form-control" placeholder="Search destinations..."
+                                   value="{{ search_query }}">
+                        </div>
+                        <div class="col-md-3">
+                            <select name="budget" class="form-select">
+                                <option value="">All Budgets</option>
+                                <option value="Low" {% if budget_filter == 'Low' %}selected{% endif %}>Budget Friendly</option>
+                                <option value="Medium" {% if budget_filter == 'Medium' %}selected{% endif %}>Mid-Range</option>
+                                <option value="High" {% if budget_filter == 'High' %}selected{% endif %}>Luxury</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select name="type" class="form-select">
+                                <option value="">All Types</option>
+                                <option value="Beach" {% if type_filter == 'Beach' %}selected{% endif %}>Beach</option>
+                                <option value="Mountain" {% if type_filter == 'Mountain' %}selected{% endif %}>Mountain</option>
+                                <option value="City" {% if type_filter == 'City' %}selected{% endif %}>City</option>
+                                <option value="Heritage" {% if type_filter == 'Heritage' %}selected{% endif %}>Heritage</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">Search</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Destinations Grid -->
+    <div class="row">
+        {% for destination in destinations %}
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                <img src="{{ destination.state_image }}" class="card-img-top" alt="{{ destination.name }}"
+                     style="height: 200px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ destination.name }}</h5>
+                    <p class="card-text">{{ destination.tagline }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge bg-{{ destination.budget|lower }}">{{ destination.budget }}</span>
+                        <span class="text-muted">{{ destination.type }}</span>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'home:destination_detail' destination.pk %}" class="btn btn-primary btn-sm">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="text-center py-5">
+                <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                <h4>No destinations found</h4>
+                <p>Try adjusting your search criteria.</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if budget_filter %}&budget={{ budget_filter }}{% endif %}{% if type_filter %}&type={{ type_filter }}{% endif %}">Previous</a>
+            </li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+            <li class="page-item active">
+                <a class="page-link" href="#">{{ num }}</a>
+            </li>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}{% if budget_filter %}&budget={{ budget_filter }}{% endif %}{% if type_filter %}&type={{ type_filter }}{% endif %}">{{ num }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if budget_filter %}&budget={{ budget_filter }}{% endif %}{% if type_filter %}&type={{ type_filter }}{% endif %}">Next</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,143 @@
+{% extends 'home/base.html' %}
+
+{% block title %}Create Trip - Safar{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-plus-circle me-2"></i>
+                        Create New Trip
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.title.id_for_label }}" class="form-label">Trip Title *</label>
+                                    {{ form.title }}
+                                    {% if form.title.errors %}
+                                        <div class="text-danger small">{{ form.title.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.budget.id_for_label }}" class="form-label">Budget (₹)</label>
+                                    {{ form.budget }}
+                                    {% if form.budget.errors %}
+                                        <div class="text-danger small">{{ form.budget.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">Description *</label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="text-danger small">{{ form.description.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.start_date.id_for_label }}" class="form-label">Start Date *</label>
+                                    {{ form.start_date }}
+                                    {% if form.start_date.errors %}
+                                        <div class="text-danger small">{{ form.start_date.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.end_date.id_for_label }}" class="form-label">End Date *</label>
+                                    {{ form.end_date }}
+                                    {% if form.end_date.errors %}
+                                        <div class="text-danger small">{{ form.end_date.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.travelers.id_for_label }}" class="form-label">Number of Travelers *</label>
+                                    {{ form.travelers }}
+                                    {% if form.travelers.errors %}
+                                        <div class="text-danger small">{{ form.travelers.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.accommodation.id_for_label }}" class="form-label">Accommodation Type</label>
+                                    {{ form.accommodation }}
+                                    {% if form.accommodation.errors %}
+                                        <div class="text-danger small">{{ form.accommodation.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.destinations.id_for_label }}" class="form-label">Destinations</label>
+                            {{ form.destinations }}
+                            {% if form.destinations.errors %}
+                                <div class="text-danger small">{{ form.destinations.errors.0 }}</div>
+                            {% endif %}
+                            <small class="form-text text-muted">Hold Ctrl (Cmd on Mac) to select multiple destinations</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.image.id_for_label }}" class="form-label">Trip Image</label>
+                            {{ form.image }}
+                            {% if form.image.errors %}
+                                <div class="text-danger small">{{ form.image.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'home:my_trips' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Create Trip
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Add date validation
+document.addEventListener('DOMContentLoaded', function() {
+    const startDate = document.getElementById('id_start_date');
+    const endDate = document.getElementById('id_end_date');
+
+    function validateDates() {
+        if (startDate.value && endDate.value) {
+            if (new Date(startDate.value) > new Date(endDate.value)) {
+                endDate.setCustomValidity('End date must be after start date');
+            } else {
+                endDate.setCustomValidity('');
+            }
+        }
+    }
+
+    startDate.addEventListener('change', validateDates);
+    endDate.addEventListener('change', validateDates);
+});
+</script>
+{% endblock %}

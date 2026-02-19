@@ -1,0 +1,352 @@
+{% extends 'home/base.html' %}
+
+{% block title %}Plan Your Trip - Safar{% endblock %}
+
+{% block extra_head %}
+<style>
+    .timeline {
+        position: relative;
+        padding-left: 20px;
+    }
+
+    .timeline:before {
+        content: '';
+        position: absolute;
+        left: 45px;
+        top: 20px;
+        bottom: 20px;
+        width: 2px;
+        background: #e9ecef;
+    }
+
+    .timeline-item {
+        position: relative;
+        padding-left: 50px;
+    }
+
+    .day-badge {
+        font-size: 1.1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 1;
+        position: relative;
+    }
+
+    .hover-shadow:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .transition-all {
+        transition: all 0.3s ease;
+    }
+
+    .card {
+        border-radius: 15px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center mb-4">Plan Your Perfect Trip</h1>
+            <p class="text-center text-muted mb-5">Create personalized itineraries with our AI-powered trip planner</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- Trip Planning Form -->
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-route me-2"></i>Trip Details</h5>
+                </div>
+                <div class="card-body">
+                    <form id="tripForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="destination" class="form-label">Destination *</label>
+                                <select class="form-select" id="destination" name="destination" required>
+                                    <option value="">Choose destination...</option>
+                                    {% for destination in destinations %}
+                                    <option value="{{ destination.id }}">{{ destination.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="duration" class="form-label">Trip Duration (days) *</label>
+                                <input type="number" class="form-control" id="duration" name="duration" min="1" max="30"
+                                    value="5" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="travelType" class="form-label">Travel Type *</label>
+                                <select class="form-select" id="travelType" name="travel_type" required>
+                                    <option value="family">Family</option>
+                                    <option value="solo">Solo</option>
+                                    <option value="couple">Couple</option>
+                                    <option value="adventure">Adventure</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="budget" class="form-label">Budget Range *</label>
+                                <select class="form-select" id="budget" name="budget" required>
+                                    <option value="Low">Budget (₹5,000-15,000)</option>
+                                    <option value="Medium">Mid-Range (₹15,000-30,000)</option>
+                                    <option value="High">Luxury (₹30,000+)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="interests" class="form-label">Interests (Optional)</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="food" name="interests[]"
+                                            value="food">
+                                        <label class="form-check-label" for="food">Local Cuisine</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="culture" name="interests[]"
+                                            value="culture">
+                                        <label class="form-check-label" for="culture">Culture & Heritage</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="nature" name="interests[]"
+                                            value="nature">
+                                        <label class="form-check-label" for="nature">Nature & Outdoors</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="adventure"
+                                            name="interests[]" value="adventure">
+                                        <label class="form-check-label" for="adventure">Adventure Activities</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="shopping" name="interests[]"
+                                            value="shopping">
+                                        <label class="form-check-label" for="shopping">Shopping</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="relaxation"
+                                            name="interests[]" value="relaxation">
+                                        <label class="form-check-label" for="relaxation">Relaxation & Spa</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-lg" id="generateBtn">
+                                <i class="fas fa-magic me-2"></i>Generate Itinerary
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Generated Itinerary -->
+            <div class="card mt-4" id="itineraryCard" style="display: none;">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-calendar-alt me-2"></i>Your Custom Itinerary</h5>
+                </div>
+                <div class="card-body">
+                    <div id="itineraryContent">
+                        <!-- Itinerary will be loaded here -->
+                    </div>
+                    <div class="text-center mt-4">
+                        <button class="btn btn-success" id="saveTripBtn">
+                            <i class="fas fa-save me-2"></i>Save This Trip
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Saved and Visited Trips Section -->
+    <div class="row mt-5">
+        <div class="col-lg-12">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="saved-tab" data-bs-toggle="tab" data-bs-target="#saved"
+                        type="button" role="tab">Planned Trips</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="visited-tab" data-bs-toggle="tab" data-bs-target="#visited"
+                        type="button" role="tab">Visited Places</button>
+                </li>
+            </ul>
+            <div class="tab-content p-4 border border-top-0 bg-white" id="myTabContent">
+                <!-- Planned Trips -->
+                <div class="tab-pane fade show active" id="saved" role="tabpanel">
+                    {% if planned_trips %}
+                    <div class="row">
+                        {% for trip in planned_trips %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ trip.title }}</h5>
+                                    <p class="card-text">
+                                        <small class="text-muted"><i class="fas fa-calendar me-1"></i>{{
+                                            trip.start_date|date:"M d, Y" }}</small><br>
+                                        <small class="text-muted"><i class="fas fa-clock me-1"></i>{{ trip.duration_days
+                                            }} Days</small>
+                                    </p>
+                                    <a href="{% url 'home:trip_detail' trip.pk %}"
+                                        class="btn btn-sm btn-outline-primary">View</a>
+                                    <form action="{% url 'home:mark_trip_completed' trip.pk %}" method="post"
+                                        class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-success ms-1">Mark Visited</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted text-center py-4">No planned trips yet. Create one above!</p>
+                    {% endif %}
+                </div>
+
+                <!-- Visited Trips -->
+                <div class="tab-pane fade" id="visited" role="tabpanel">
+                    {% if visited_trips %}
+                    <div class="row">
+                        {% for trip in visited_trips %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100 border-success">
+                                <div class="card-body">
+                                    <h5 class="card-title text-success"><i class="fas fa-check-circle me-2"></i>{{
+                                        trip.title }}</h5>
+                                    <p class="card-text">
+                                        <small class="text-muted"><i class="fas fa-calendar me-1"></i>{{
+                                            trip.start_date|date:"M d, Y" }}</small>
+                                    </p>
+                                    <a href="{% url 'home:trip_detail' trip.pk %}"
+                                        class="btn btn-sm btn-outline-success">View Memories</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted text-center py-4">You haven't marked any trips as visited yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const tripForm = document.getElementById('tripForm');
+        const generateBtn = document.getElementById('generateBtn');
+        const itineraryCard = document.getElementById('itineraryCard');
+        const itineraryContent = document.getElementById('itineraryContent');
+
+        tripForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Show loading state
+            generateBtn.disabled = true;
+            generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Generating...';
+
+            // Collect form data
+            const formData = new FormData(tripForm);
+
+            // Send AJAX request to generate/save trip
+            fetch("{% url 'home:generate_itinerary' %}", {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        renderItinerary(data);
+                        generateBtn.innerHTML = '<i class="fas fa-check me-2"></i>Itinerary Generated!';
+
+                        // Refresh page logic can be handled here if needed, or just show the "Saved" tab
+                        setTimeout(() => {
+                            generateBtn.disabled = false;
+                            generateBtn.innerHTML = '<i class="fas fa-magic me-2"></i>Generate Itinerary';
+                            // Switch to "Saved" tab automatically could be a nice touch
+                            // document.getElementById('saved-tab').click(); 
+                            alert('Trip saved to "Planned Trips"!');
+                            location.reload(); // Reload to show in the list
+                        }, 1500);
+                    } else {
+                        alert('Error: ' + data.message);
+                        generateBtn.disabled = false;
+                        generateBtn.innerHTML = '<i class="fas fa-magic me-2"></i>Generate Itinerary';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    generateBtn.disabled = false;
+                    generateBtn.innerHTML = '<i class="fas fa-magic me-2"></i>Generate Itinerary';
+                    alert('An error occurred. Please try again.');
+                });
+        });
+
+        function renderItinerary(data) {
+            const days = data.days;
+            let itineraryHTML = `
+                <div class="text-center mb-5">
+                    <h2 class="fw-bold text-primary mb-2">${data.trip_title}</h2>
+                    <p class="text-muted lead">Your personalized travel plan</p>
+                </div>
+                
+                <div class="timeline">
+            `;
+
+            days.forEach(day => {
+                let activitiesHtml = '';
+                day.activities.forEach(activity => {
+                    activitiesHtml += `<li class="mb-2"><i class="fas fa-check text-success me-2"></i>${activity}</li>`;
+                });
+
+                itineraryHTML += `
+                    <div class="timeline-item mb-4">
+                        <div class="card border-0 shadow-sm hover-shadow transition-all">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="day-badge bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px; font-weight: bold;">
+                                        Day ${day.day}
+                                    </div>
+                                    <h4 class="mb-0 text-dark">${day.title}</h4>
+                                </div>
+                                <p class="text-muted mb-3">${day.description}</p>
+                                <div class="bg-light p-3 rounded">
+                                    <h6 class="text-primary mb-3"><i class="fas fa-walking me-2"></i>Activities</h6>
+                                    <ul class="list-unstyled mb-0">
+                                        ${activitiesHtml}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            itineraryHTML += `</div>`;
+
+            itineraryContent.innerHTML = itineraryHTML;
+            itineraryCard.style.display = 'block';
+            itineraryCard.scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,151 @@
+{% extends 'home/base.html' %}
+
+{% block title %}{{ destination.name }} - Safar{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Destination Header -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card">
+                <img src="{{ destination.state_image }}" class="card-img-top" alt="{{ destination.name }}"
+                     style="height: 400px; object-fit: cover;">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h1 class="card-title">{{ destination.name }}</h1>
+                            <p class="lead">{{ destination.tagline }}</p>
+                            <p class="card-text">{{ destination.description }}</p>
+
+                            <div class="row mt-3">
+                                <div class="col-md-3">
+                                    <strong>Type:</strong> {{ destination.type }}
+                                </div>
+                                <div class="col-md-3">
+                                    <strong>Budget:</strong>
+                                    <span class="badge bg-{{ destination.budget|lower }}">{{ destination.budget }}</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <strong>Best Time:</strong> {{ destination.best_time }}
+                                </div>
+                                <div class="col-md-3">
+                                    <strong>Languages:</strong> {{ destination.languages }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h5>Cost Breakdown (per day)</h5>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Stay:</span>
+                                        <strong>₹{{ destination.stay_cost }}</strong>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Food:</span>
+                                        <strong>₹{{ destination.food_cost }}</strong>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Transport:</span>
+                                        <strong>₹{{ destination.transport_cost }}</strong>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Activities:</span>
+                                        <strong>₹{{ destination.activities_cost }}</strong>
+                                    </div>
+                                    <hr>
+                                    <div class="d-flex justify-content-between">
+                                        <strong>Total:</strong>
+                                        <strong>₹{{ total_daily_cost }}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Food Items -->
+    {% if food_items %}
+    <div class="row mb-5">
+        <div class="col-12">
+            <h3 class="mb-4">Local Cuisine</h3>
+            <div class="row">
+                {% for food in food_items %}
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">{{ food.dish }}</h6>
+                            <p class="card-text">{{ food.description }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-secondary">{{ food.price }}</span>
+                                {% if food.is_vegetarian %}
+                                <span class="badge bg-success">Vegetarian</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Travel Vlogs -->
+    {% if vlogs %}
+    <div class="row mb-5">
+        <div class="col-12">
+            <h3 class="mb-4">Travel Vlogs from {{ destination.name }}</h3>
+            <div class="row">
+                {% for vlog in vlogs %}
+                <div class="col-md-6 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">{{ vlog.title }}</h6>
+                            <p class="card-text">{{ vlog.description|truncatechars:100 }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">By {{ vlog.author.username }}</small>
+                                <a href="{% url 'home:vlog_detail' vlog.pk %}" class="btn btn-sm btn-outline-primary">Watch</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Reviews -->
+    {% if reviews %}
+    <div class="row">
+        <div class="col-12">
+            <h3 class="mb-4">Traveler Reviews</h3>
+            <div class="row">
+                {% for review in reviews %}
+                <div class="col-md-6 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6 class="card-title mb-0">{{ review.user.username }}</h6>
+                                <div class="rating-stars">
+                                    {% for i in "12345"|make_list %}
+                                    <i class="fas fa-star{% if forloop.counter > review.rating %}-o{% endif %}"></i>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <p class="card-text">{{ review.comment }}</p>
+                            <small class="text-muted">{{ review.created_at|date:"M d, Y" }}</small>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

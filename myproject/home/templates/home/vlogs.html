@@ -1,0 +1,172 @@
+{% extends 'home/base.html' %}
+
+{% block title %}Travel Vlogs - Safar{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center mb-4">Travel Vlogs</h1>
+            <div class="text-center mb-4">
+                <p class="text-muted d-inline-block mb-0 me-3">Discover authentic travel experiences shared by fellow travelers</p>
+                {% if user.is_authenticated %}
+                <a href="{% url 'home:upload_vlog' %}" class="btn btn-success btn-sm rounded-pill"><i class="fas fa-plus me-1"></i>Upload Vlog</a>
+                {% endif %}
+            </div>
+
+            <!-- Search and Filter Form -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="GET" class="row g-3">
+                        <div class="col-md-4">
+                            <input type="text" name="q" class="form-control" placeholder="Search vlogs..."
+                                   value="{{ search_query }}">
+                        </div>
+                        <div class="col-md-3">
+                            <select name="type" class="form-select">
+                                <option value="">All Types</option>
+                                <option value="local-insider" {% if type_filter == 'local-insider' %}selected{% endif %}>Local Insider</option>
+                                <option value="adventure" {% if type_filter == 'adventure' %}selected{% endif %}>Adventure</option>
+                                <option value="food" {% if type_filter == 'food' %}selected{% endif %}>Food & Culture</option>
+                                <option value="budget" {% if type_filter == 'budget' %}selected{% endif %}>Budget Travel</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select name="destination" class="form-select">
+                                <option value="">All Destinations</option>
+                                {% for dest in destinations %}
+                                <option value="{{ dest.id }}" {% if destination_filter == dest.id|stringformat:'s' %}selected{% endif %}>{{ dest.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">Search</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Sort Options -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <span class="text-muted">{{ total_vlogs }} vlogs found</span>
+                </div>
+                <div>
+                    <select class="form-select form-select-sm" onchange="location = this.value;">
+                        <option value="?{% if search_query %}q={{ search_query }}&{% endif %}{% if type_filter %}type={{ type_filter }}&{% endif %}{% if destination_filter %}destination={{ destination_filter }}&{% endif %}sort=latest" {% if sort_by == 'latest' %}selected{% endif %}>Latest First</option>
+                        <option value="?{% if search_query %}q={{ search_query }}&{% endif %}{% if type_filter %}type={{ type_filter }}&{% endif %}{% if destination_filter %}destination={{ destination_filter }}&{% endif %}sort=popular" {% if sort_by == 'popular' %}selected{% endif %}>Most Popular</option>
+                        <option value="?{% if search_query %}q={{ search_query }}&{% endif %}{% if type_filter %}type={{ type_filter }}&{% endif %}{% if destination_filter %}destination={{ destination_filter }}&{% endif %}sort=liked" {% if sort_by == 'liked' %}selected{% endif %}>Most Liked</option>
+                        <option value="?{% if search_query %}q={{ search_query }}&{% endif %}{% if type_filter %}type={{ type_filter }}&{% endif %}{% if destination_filter %}destination={{ destination_filter }}&{% endif %}sort=oldest" {% if sort_by == 'oldest' %}selected{% endif %}>Oldest First</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vlogs Grid -->
+    <div class="row">
+        {% for vlog in vlogs %}
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="badge bg-{{ vlog.type|slugify }}">{{ vlog.type|title }}</span>
+                        {% if vlog.featured %}
+                        <span class="badge bg-warning">Featured</span>
+                        {% endif %}
+                    </div>
+
+                    <h5 class="card-title">{{ vlog.title }}</h5>
+                    <p class="card-text">{{ vlog.description|truncatechars:120 }}</p>
+
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <small class="text-muted">By {{ vlog.author.username }}</small>
+                        <small class="text-muted">{{ vlog.destination.name }}</small>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-eye me-1"></i>{{ vlog.views }}
+                            <i class="fas fa-heart ms-2 me-1"></i>{{ vlog.likes }}
+                        </div>
+                        <div>
+                            {% if user.is_staff %}
+                            <a href="{% url 'home:edit_vlog' vlog.pk %}" class="btn btn-outline-secondary btn-sm me-1"><i class="fas fa-edit"></i></a>
+                            {% endif %}
+                            <a href="{% url 'home:vlog_detail' vlog.pk %}" class="btn btn-primary btn-sm">Watch Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="text-center py-5">
+                <i class="fas fa-video fa-3x text-muted mb-3"></i>
+                <h4>No vlogs found</h4>
+                <p>Try adjusting your search criteria or check back later for new content.</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if type_filter %}&type={{ type_filter }}{% endif %}{% if destination_filter %}&destination={{ destination_filter }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}">Previous</a>
+            </li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+            <li class="page-item active">
+                <a class="page-link" href="#">{{ num }}</a>
+            </li>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}{% if type_filter %}&type={{ type_filter }}{% endif %}{% if destination_filter %}&destination={{ destination_filter }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}">{{ num }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if type_filter %}&type={{ type_filter }}{% endif %}{% if destination_filter %}&destination={{ destination_filter }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}">Next</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+
+    <!-- Statistics -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <h4 class="text-primary">{{ total_vlogs }}</h4>
+                            <p class="mb-0">Total Vlogs</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h4 class="text-success">{{ total_views }}</h4>
+                            <p class="mb-0">Total Views</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h4 class="text-danger">{{ total_likes }}</h4>
+                            <p class="mb-0">Total Likes</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h4 class="text-info">{{ destinations|length }}</h4>
+                            <p class="mb-0">Destinations Covered</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

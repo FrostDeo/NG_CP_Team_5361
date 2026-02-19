@@ -1,0 +1,192 @@
+{% extends 'home/base.html' %}
+
+{% block title %}{{ trip.title }} - Safar{% endblock %}
+
+{% block extra_head %}
+<style>
+    .timeline {
+        position: relative;
+        padding-left: 20px;
+    }
+
+    .timeline:before {
+        content: '';
+        position: absolute;
+        left: 45px;
+        top: 20px;
+        bottom: 20px;
+        width: 2px;
+        background: #e9ecef;
+    }
+
+    .timeline-item {
+        position: relative;
+        padding-left: 50px;
+    }
+
+    .day-badge {
+        font-size: 1.1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 1;
+        position: relative;
+    }
+
+    .hover-shadow:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .transition-all {
+        transition: all 0.3s ease;
+    }
+
+    .card {
+        border-radius: 15px;
+    }
+
+    @media print {
+
+        .navbar,
+        .footer,
+        .btn,
+        .no-print {
+            display: none !important;
+        }
+
+        .card {
+            border: 1px solid #ddd !important;
+            box-shadow: none !important;
+            break-inside: avoid;
+        }
+
+        .timeline:before {
+            display: none;
+        }
+
+        .timeline-item {
+            padding-left: 0;
+            margin-bottom: 20px;
+        }
+
+        .timeline {
+            padding-left: 0;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Trip Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h1 class="card-title fw-bold text-primary mb-2">{{ trip.title }}</h1>
+                            <p class="lead text-muted mb-3">
+                                <i class="fas fa-map-marker-alt me-2"></i>{{ trip.destination.name }}
+                            </p>
+                            <div class="d-flex flex-wrap gap-3">
+                                <span class="badge bg-light text-dark border"><i class="fas fa-clock me-1"></i>{{
+                                    trip.duration_days }} days</span>
+                                <span class="badge bg-light text-dark border"><i class="fas fa-user-friends me-1"></i>{{
+                                    trip.travel_type|title }}</span>
+                                <span class="badge bg-light text-dark border"><i class="fas fa-wallet me-1"></i>₹{{
+                                    trip.daily_budget }}/day</span>
+                                <span class="badge bg-{{ trip.status|lower }}">{{ trip.status|title }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                            <div class="text-muted small mb-1">Travel Dates</div>
+                            <h5 class="fw-bold">{{ trip.start_date|date:"M d, Y" }} - {{ trip.end_date|date:"M d, Y" }}
+                            </h5>
+                            {% if trip.interests %}
+                            <div class="mt-2">
+                                {% for interest in trip.interests %}
+                                <span class="badge bg-secondary opacity-75 rounded-pill">{{ interest }}</span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trip Itinerary -->
+    <div class="row">
+        <div class="col-12">
+            <h3 class="mb-4 fw-bold text-dark border-bottom pb-2">Your Itinerary</h3>
+
+            <div class="timeline">
+                {% for day in trip.days.all %}
+                <div class="timeline-item mb-4">
+                    <div class="card border-0 shadow-sm hover-shadow transition-all">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="day-badge bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                                    style="width: 50px; height: 50px; font-weight: bold;">
+                                    Day {{ day.day_number }}
+                                </div>
+                                <h4 class="mb-0 text-dark">{{ day.title }}</h4>
+                            </div>
+                            <p class="text-muted mb-3">{{ day.description }}</p>
+                            {% if day.activities %}
+                            <div class="bg-light p-3 rounded">
+                                <h6 class="text-primary mb-3"><i class="fas fa-walking me-2"></i>Activities</h6>
+                                <ul class="list-unstyled mb-0">
+                                    {% for activity in day.activities %}
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>{{ activity }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center py-5">
+                        <i class="fas fa-map-signs fa-3x text-muted mb-3"></i>
+                        <h5>Itinerary data not found</h5>
+                        <p class="text-muted">It seems this trip doesn't have generated day-by-day details.</p>
+                        <form action="{% url 'home:trip_planner' %}" method="get">
+                            <button type="submit" class="btn btn-primary mt-3">Create New Trip</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Trip Actions -->
+    <div class="row mt-4 no-print">
+        <div class="col-12">
+            <div class="d-flex justify-content-between">
+                <a href="{% url 'home:my_trips' %}" class="btn btn-outline-secondary rounded-pill px-4">
+                    <i class="fas fa-arrow-left me-2"></i>Back to My Trips
+                </a>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-primary rounded-pill px-4" onclick="printItinerary()">
+                        <i class="fas fa-print me-2"></i>Print Itinerary
+                    </button>
+                    <a href="{% url 'home:destination_detail' trip.destination.pk %}"
+                        class="btn btn-info text-white rounded-pill px-4">
+                        <i class="fas fa-info-circle me-2"></i>Destination Info
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function printItinerary() {
+        window.print();
+    }
+</script>
+{% endblock %}

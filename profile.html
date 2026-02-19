@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Safar</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <!-- Remix Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        .profile-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary), #FF5722);
+            color: var(--white);
+            padding: 40px;
+            text-align: center;
+        }
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            margin: 0 auto 20px;
+        }
+        .profile-content {
+            padding: 30px;
+        }
+        .profile-section {
+            margin-bottom: 30px;
+        }
+        .profile-section h3 {
+            color: var(--dark);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+        .trip-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: var(--radius);
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary);
+        }
+        .trip-card h4 {
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+        .trip-card p {
+            margin: 5px 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .preferences-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        .preference-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: var(--radius);
+            text-align: center;
+        }
+        .preference-item i {
+            font-size: 24px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
+            text-align: center;
+        }
+        .stat-item {
+            padding: 20px;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-radius: var(--radius);
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: block;
+        }
+        .stat-label {
+            color: var(--dark);
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="container">
+        <div class="logo">Safar<span style="color:var(--secondary)">.com</span></div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="planner.html">Plan Trip</a>
+            <a href="ai-guide.html">AI Guide</a>
+            <a href="profile.html" class="active"><i class="ri-user-line"></i> Profile</a>
+            <a href="login.html"><i class="ri-login-box-line"></i> Login</a>
+        </div>
+    </nav>
+
+    <!-- Profile Page -->
+    <div class="container">
+        <div class="profile-container">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <i class="ri-user-line"></i>
+                </div>
+                <h1>John Doe</h1>
+                <p>Adventure Seeker | Budget Traveler</p>
+            </div>
+
+            <div class="profile-content">
+                <!-- Travel Stats -->
+                <div class="profile-section">
+                    <h3><i class="ri-bar-chart-line"></i> Travel Statistics</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-number">12</span>
+                            <span class="stat-label">Trips Completed</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">8</span>
+                            <span class="stat-label">Destinations</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">₹45K</span>
+                            <span class="stat-label">Total Saved</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">4.8</span>
+                            <span class="stat-label">Avg Rating</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Travel Preferences -->
+                <div class="profile-section">
+                    <h3><i class="ri-heart-line"></i> Travel Preferences</h3>
+                    <div class="preferences-grid">
+                        <div class="preference-item">
+                            <i class="ri-sun-line"></i>
+                            <div>Beach Destinations</div>
+                        </div>
+                        <div class="preference-item">
+                            <i class="ri-mountain-line"></i>
+                            <div>Mountain Treks</div>
+                        </div>
+                        <div class="preference-item">
+                            <i class="ri-restaurant-line"></i>
+                            <div>Local Cuisine</div>
+                        </div>
+                        <div class="preference-item">
+                            <i class="ri-camera-line"></i>
+                            <div>Photography</div>
+                        </div>
+                        <div class="preference-item">
+                            <i class="ri-money-rupee-circle-line"></i>
+                            <div>Budget Travel</div>
+                        </div>
+                        <div class="preference-item">
+                            <i class="ri-group-line"></i>
+                            <div>Solo Travel</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Trips -->
+                <div class="profile-section">
+                    <h3><i class="ri-history-line"></i> Recent Trips</h3>
+                    <div id="recentTrips">
+                        <div class="trip-card">
+                            <h4>Kerala Backwaters</h4>
+                            <p><strong>Duration:</strong> 5 days</p>
+                            <p><strong>Budget:</strong> ₹8,000</p>
+                            <p><strong>Rating:</strong> ⭐⭐⭐⭐⭐</p>
+                            <p style="font-style: italic; margin-top: 10px;">"Amazing experience with houseboat stay and local culture!"</p>
+                        </div>
+                        <div class="trip-card">
+                            <h4>Goa Beaches</h4>
+                            <p><strong>Duration:</strong> 4 days</p>
+                            <p><strong>Budget:</strong> ₹6,500</p>
+                            <p><strong>Rating:</strong> ⭐⭐⭐⭐⭐</p>
+                            <p style="font-style: italic; margin-top: 10px;">"Perfect beach vacation with great food and water sports!"</p>
+                        </div>
+                        <div class="trip-card">
+                            <h4>Rajasthan Desert</h4>
+                            <p><strong>Duration:</strong> 6 days</p>
+                            <p><strong>Budget:</strong> ₹9,200</p>
+                            <p><strong>Rating:</strong> ⭐⭐⭐⭐⭐</p>
+                            <p style="font-style: italic; margin-top: 10px;">"Incredible cultural experience and camel safari!"</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings -->
+                <div class="profile-section">
+                    <h3><i class="ri-settings-line"></i> Account Settings</h3>
+                    <div style="display: grid; gap: 15px;">
+                        <button class="btn btn-secondary" style="width: 100%; text-align: left; justify-content: flex-start;">
+                            <i class="ri-edit-line" style="margin-right: 10px;"></i> Edit Profile
+                        </button>
+                        <button class="btn btn-secondary" style="width: 100%; text-align: left; justify-content: flex-start;">
+                            <i class="ri-notification-line" style="margin-right: 10px;"></i> Notification Preferences
+                        </button>
+                        <button class="btn btn-secondary" style="width: 100%; text-align: left; justify-content: flex-start;">
+                            <i class="ri-lock-line" style="margin-right: 10px;"></i> Privacy Settings
+                        </button>
+                        <button class="btn btn-secondary" style="width: 100%; text-align: left; justify-content: flex-start;">
+                            <i class="ri-logout-box-line" style="margin-right: 10px;"></i> Sign Out
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer style="background: var(--dark); color: var(--white); padding: 40px 0; margin-top: auto;">
+        <div class="container" style="text-align: center;">
+            <p>&copy; 2026 Safar.com. Explore the world confidently.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/profile.js"></script>
+</body>
+</html>

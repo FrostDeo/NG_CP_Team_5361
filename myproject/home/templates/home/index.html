@@ -1,0 +1,298 @@
+{% extends 'home/base.html' %}
+
+{% block title %}Safar - Your Travel Companion{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">Travel Smart,<br>Explore Freely.</h1>
+                <p class="lead mb-4">Your AI-powered guide for budget-friendly, safe, and immersive travel experiences across India.</p>
+
+                <form class="d-flex mb-4" action="{% url 'home:search' %}" method="GET">
+                    <input type="text" name="q" class="form-control form-control-lg me-2" placeholder="Search destinations, vlogs..." required>
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </form>
+
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="{% url 'home:destinations' %}?type=Family" class="badge bg-light text-dark p-2">Family Trips</a>
+                    <a href="{% url 'home:destinations' %}?budget=Low" class="badge bg-light text-dark p-2">Budget Travel</a>
+                    <a href="{% url 'home:vlogs' %}?type=local-insider" class="badge bg-light text-dark p-2">Local Guides</a>
+                    <a href="{% url 'home:ai_guide' %}" class="badge bg-light text-dark p-2">AI Assistant</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <img src="https://source.unsplash.com/600x400/?nature,travel,mountain,valley,forest" alt="Beautiful Nature Travel Destination" class="img-fluid rounded shadow" style="width: 100%; height: 400px; object-fit: cover;">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Authentication Call to Action -->
+{% if not user.is_authenticated %}
+<section class="py-5 bg-gradient" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h2 class="mb-3">Join the Safar Community</h2>
+                <p class="lead mb-4">Create your account to plan trips, save favorites, write reviews, and get personalized travel recommendations.</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{% url 'login' %}" class="btn btn-light btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login to Your Account
+                    </a>
+                    <a href="{% url 'home:register' %}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>Register as New User
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center">
+                <div class="bg-white bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 120px; height: 120px;">
+                    <i class="fas fa-users fa-3x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% else %}
+<section class="py-5 bg-success text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h2 class="mb-3">Welcome back, {{ user.get_full_name|default:user.username }}!</h2>
+                <p class="lead mb-4">Continue planning your next adventure or explore new destinations.</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{% url 'home:my_trips' %}" class="btn btn-light btn-lg">
+                        <i class="fas fa-suitcase me-2"></i>My Trips
+                    </a>
+                    <a href="{% url 'home:create_trip' %}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-plus me-2"></i>Plan New Trip
+                    </a>
+                    <a href="{% url 'home:logout' %}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center">
+                <div class="bg-white bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 120px; height: 120px;">
+                    <i class="fas fa-user-check fa-3x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Featured Destinations -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="text-center mb-5">Popular Destinations</h2>
+            </div>
+        </div>
+
+        <div class="row">
+            {% for destination in featured_destinations %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="{{ destination.state_image }}" class="card-img-top" alt="{{ destination.name }}" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ destination.name }}</h5>
+                        <p class="card-text">{{ destination.tagline }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-{% if destination.budget == 'Low' %}success{% elif destination.budget == 'Medium' %}warning{% else %}danger{% endif %}">
+                                {{ destination.budget }}
+                            </span>
+                            <small class="text-muted">₹{{ destination.get_total_daily_cost|floatformat:0 }}/day</small>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{% url 'home:destination_detail' destination.pk %}" class="btn btn-primary w-100">Explore</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p class="text-muted">No destinations available at the moment.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{% url 'home:destinations' %}" class="btn btn-outline-primary">View All Destinations</a>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Vlogs -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="text-center mb-5">Travel Stories & Tips</h2>
+            </div>
+        </div>
+
+        <div class="row">
+            {% for vlog in featured_vlogs %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="position-relative">
+                        <img src="{{ vlog.thumbnail }}" class="card-img-top" alt="{{ vlog.title }}" style="height: 200px; object-fit: cover;">
+                        <span class="badge bg-primary position-absolute top-0 end-0 m-2">{{ vlog.duration }}</span>
+                        {% if vlog.featured %}
+                        <span class="badge bg-warning position-absolute top-0 start-0 m-2">
+                            <i class="fas fa-star"></i> Featured
+                        </span>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-title">{{ vlog.title|truncatechars:50 }}</h6>
+                        <p class="card-text small text-muted">{{ vlog.description|truncatechars:100 }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                <i class="fas fa-user me-1"></i>{{ vlog.author.username }}
+                            </small>
+                            <small class="text-muted">
+                                <i class="fas fa-eye me-1"></i>{{ vlog.views }}
+                            </small>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{% url 'home:vlog_detail' vlog.pk %}" class="btn btn-primary w-100">Watch Now</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p class="text-muted">No vlogs available at the moment.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{% url 'home:vlogs' %}" class="btn btn-outline-primary">View All Vlogs</a>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="text-center mb-5">Why Choose Safar?</h2>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3 mb-4">
+                <div class="text-center">
+                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                        <i class="fas fa-robot fa-2x"></i>
+                    </div>
+                    <h5 class="mt-3">AI-Powered Planning</h5>
+                    <p class="text-muted">Get personalized itineraries based on your preferences and budget.</p>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-4">
+                <div class="text-center">
+                    <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                        <i class="fas fa-rupee-sign fa-2x"></i>
+                    </div>
+                    <h5 class="mt-3">Budget-Friendly</h5>
+                    <p class="text-muted">Find the best deals and optimize your spending with our cost-saving recommendations.</p>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-4">
+                <div class="text-center">
+                    <div class="bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                        <i class="fas fa-shield-alt fa-2x"></i>
+                    </div>
+                    <h5 class="mt-3">Safe & Reliable</h5>
+                    <p class="text-muted">Travel with confidence using our verified information and safety guidelines.</p>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-4">
+                <div class="text-center">
+                    <div class="bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                        <i class="fas fa-users fa-2x"></i>
+                    </div>
+                    <h5 class="mt-3">Local Insights</h5>
+                    <p class="text-muted">Discover hidden gems and authentic experiences through local recommendations.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Recent Reviews -->
+{% if recent_reviews %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="text-center mb-5">Traveler Reviews</h2>
+            </div>
+        </div>
+
+        <div class="row">
+            {% for review in recent_reviews %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="rating-stars me-2">
+                                {% for i in "12345"|make_list %}
+                                    <i class="fas fa-star{% if forloop.counter > review.rating %}-half-alt{% endif %}"></i>
+                                {% endfor %}
+                            </div>
+                            <small class="text-muted">{{ review.visit_date|date:"M Y" }}</small>
+                        </div>
+                        <h6 class="card-title">{{ review.title }}</h6>
+                        <p class="card-text small">{{ review.content|truncatechars:120 }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">{{ review.user.username }}</small>
+                            <small class="text-muted">{{ review.destination.name }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Call to Action -->
+<section class="py-5 bg-primary text-white">
+    <div class="container text-center">
+        {% if not user.is_authenticated %}
+            <h2 class="mb-4">Ready to Start Your Journey?</h2>
+            <p class="lead mb-4">Join thousands of travelers planning their perfect trips with Safar.</p>
+            <a href="{% url 'home:register' %}" class="btn btn-light btn-lg me-3">
+                <i class="fas fa-user-plus me-2"></i>Get Started Free
+            </a>
+            <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg">
+                <i class="fas fa-sign-in-alt me-2"></i>Already Have Account?
+            </a>
+        {% else %}
+            <h2 class="mb-4">Ready to Start Your Journey?</h2>
+            <p class="lead mb-4">Plan your perfect trip with our AI-powered travel assistant.</p>
+            <a href="{% url 'home:trip_planner' %}" class="btn btn-light btn-lg me-3">
+                <i class="fas fa-route me-2"></i>Plan Your Trip
+            </a>
+            <a href="{% url 'home:ai_guide' %}" class="btn btn-outline-light btn-lg">
+                <i class="fas fa-robot me-2"></i>Ask AI Guide
+            </a>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

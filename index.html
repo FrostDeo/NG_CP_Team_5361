@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safar - Your Smart Travel Companion</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <!-- Remix Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="container">
+        <div class="logo">Safar<span style="color:var(--secondary)">.com</span></div>
+        <div class="nav-links">
+            <a href="index.html" class="active">Home</a>
+            <a href="planner.html">Plan Trip</a>
+            <a href="ai-guide.html">AI Guide</a>
+            <a href="vlogs.html">Vlogs</a>
+            <a href="profile.html"><i class="ri-user-line"></i> Profile</a>
+            <a href="login.html"><i class="ri-login-box-line"></i> Login</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="container hero-content">
+            <h1>Travel Smart, <br> Explore Freely.</h1>
+            <p>Your AI-powered guide for budget-friendly, safe, and immersive travel experiences across India.</p>
+            
+            <!-- Smart Search Bar -->
+            <div class="search-box">
+                <form action="search.html" method="GET" id="searchForm">
+                    <div class="input-group">
+                        <i class="ri-map-pin-line"></i>
+                        <input type="text" name="destination" list="destinationsList" placeholder="Where to? (e.g. Kerala)" required>
+                        <datalist id="destinationsList">
+                            <!-- Populated by JS -->
+                        </datalist>
+                    </div>
+                    <div class="input-group">
+                        <i class="ri-wallet-3-line"></i>
+                        <select name="budget">
+                            <option value="">Any Budget</option>
+                            <option value="Low">Low (₹)</option>
+                            <option value="Medium">Medium (₹₹)</option>
+                            <option value="High">Luxury (₹₹₹)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <i class="ri-compass-3-line"></i>
+                        <select name="type">
+                            <option value="">Travel Type</option>
+                            <option value="Solo">Solo</option>
+                            <option value="Family">Family</option>
+                            <option value="Adventure">Adventure</option>
+                            <option value="Honeymoon">Honeymoon</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i class="ri-search-line"></i> Search</button>
+                </form>
+            </div>
+            <div class="quick-tags">
+                <span>Popular:</span>
+                <a href="search.html?destination=Goa">Goa</a>
+                <a href="search.html?destination=Kerala">Kerala</a>
+                <a href="search.html?destination=Rajasthan">Rajasthan</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Popular Destinations -->
+    <section class="container" style="margin-top: 80px; margin-bottom: 80px;">
+        <div class="section-title">
+            <h2>Popular Destinations</h2>
+            <p style="font-size: 1rem; color: #666; margin-top: 10px;">Explore the most loved places by travelers like you.</p>
+        </div>
+        <div class="destinations-grid" id="popularDestinations">
+            <!-- Rendered by JS -->
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section" style="background: #e3f2fd; padding: 60px 0;">
+        <div class="container">
+            <div class="section-title">
+                <h2>Why Use Safar?</h2>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="ri-translate-2-line" style="font-size: 40px; color: var(--primary);"></i>
+                    <h3>Local Lingo</h3>
+                    <p>Communicate effortlessly with built-in translations and audio guides.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="ri-money-rupee-circle-line" style="font-size: 40px; color: var(--primary);"></i>
+                    <h3>Budget Planning</h3>
+                    <p>Know exactly what you'll spend on food, stay, and transport.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="ri-robot-line" style="font-size: 40px; color: var(--primary);"></i>
+                    <h3>AI Assistant</h3>
+                    <p>Get instant itineraries and tips from your 24/7 travel buddy.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background: var(--dark); color: var(--white); padding: 40px 0; margin-top: auto;">
+        <div class="container" style="text-align: center;">
+            <p>&copy; 2026 Safar.com. Explore the world confidently.</p>
+        </div>
+    </footer>
+
+    <!-- Floating AI Chat -->
+    <a href="ai-guide.html" class="ai-fab" title="Chat with AI Guide">
+        <i class="ri-robot-2-line"></i>
+    </a>
+
+    <!-- Scripts -->
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

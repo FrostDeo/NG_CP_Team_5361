@@ -1,0 +1,208 @@
+{% extends 'home/base.html' %}
+
+{% block title %}Upload Vlog - Safar{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                <div class="card-header bg-primary text-white p-4">
+                    <h2 class="h4 mb-0 fw-bold">Upload New Vlog</h2>
+                    <p class="mb-0 opacity-75">Share your travel experiences with the world</p>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate
+                        id="vlogUploadForm">
+                        {% csrf_token %}
+
+                        {% if form.errors %}
+                        <div class="alert alert-danger mb-4 rounded-3 border-0 shadow-sm" role="alert">
+                            <h5 class="alert-heading h6 fw-bold"><i
+                                    class="bi bi-exclamation-triangle-fill me-2"></i>Please correct the errors below:
+                            </h5>
+                            <ul class="mb-0 ps-3">
+                                {% for field, errors in form.errors.items %}
+                                {% for error in errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                                {% endfor %}
+                                {% for error in form.non_field_errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+
+                        <!-- Basic Info Section -->
+                        <div class="mb-4">
+                            <h5 class="text-primary fw-bold mb-3 border-bottom pb-2">Basic Info</h5>
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label for="{{ form.title.id_for_label }}" class="form-label fw-bold">Title</label>
+                                    {{ form.title.errors }}
+                                    <input type="text" name="{{ form.title.name }}" id="{{ form.title.id_for_label }}"
+                                        class="form-control form-control-lg" placeholder="Give your vlog a catchy title"
+                                        required>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="{{ form.destination.id_for_label }}"
+                                        class="form-label fw-bold">Destination</label>
+                                    {{ form.destination.errors }}
+                                    {{ form.destination }}
+                                    <!-- Ensure destination widget has class="form-select" in forms.py or add via JS -->
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="{{ form.type.id_for_label }}" class="form-label fw-bold">Vlog
+                                        Type</label>
+                                    {{ form.type.errors }}
+                                    {{ form.type }}
+                                </div>
+
+                                <div class="col-12">
+                                    <label for="{{ form.description.id_for_label }}"
+                                        class="form-label fw-bold">Description</label>
+                                    {{ form.description.errors }}
+                                    {{ form.description }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Video Source Tabs -->
+                        <div class="mb-4">
+                            <h5 class="text-primary fw-bold mb-3 border-bottom pb-2">Video Source</h5>
+
+                            <ul class="nav nav-pills nav-fill mb-3 gap-2" id="videoSourceTab" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active rounded-pill fw-bold" id="upload-tab"
+                                        data-bs-toggle="tab" data-bs-target="#upload-panel" type="button" role="tab"
+                                        aria-selected="true">
+                                        <i class="bi bi-cloud-upload-fill me-2"></i>Upload Video
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link rounded-pill fw-bold" id="link-tab" data-bs-toggle="tab"
+                                        data-bs-target="#link-panel" type="button" role="tab" aria-selected="false">
+                                        <i class="bi bi-youtube me-2"></i>YouTube/Vimeo Link
+                                    </button>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content border rounded-4 p-4 bg-light" id="videoSourceContent">
+                                <!-- Upload Panel -->
+                                <div class="tab-pane fade show active" id="upload-panel" role="tabpanel"
+                                    aria-labelledby="upload-tab">
+                                    <div class="text-center mb-3">
+                                        <div class="upload-icon mb-3 text-primary">
+                                            <i class="bi bi-file-earmark-play display-4"></i>
+                                        </div>
+                                        <label for="{{ form.video_file.id_for_label }}"
+                                            class="form-label fw-bold mb-1">Choose Video File</label>
+                                        <div class="text-muted small mb-3">Max size: 500MB. Supported formats: MP4, MOV,
+                                            AVI</div>
+                                        {{ form.video_file }}
+                                        {{ form.video_file.errors }}
+                                    </div>
+                                </div>
+
+                                <!-- Link Panel -->
+                                <div class="tab-pane fade" id="link-panel" role="tabpanel" aria-labelledby="link-tab">
+                                    <label for="{{ form.video_url.id_for_label }}" class="form-label fw-bold">Paste
+                                        Video URL</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white border-end-0"><i
+                                                class="bi bi-link-45deg"></i></span>
+                                        {{ form.video_url }}
+                                    </div>
+                                    <div class="form-text mt-2">Paste a link from YouTube or Vimeo to embed the video.
+                                    </div>
+                                    {{ form.video_url.errors }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tags -->
+                        <div class="mb-4">
+                            <label for="{{ form.tags.id_for_label }}" class="form-label fw-bold">Tags</label>
+                            {{ form.tags.errors }}
+                            {{ form.tags }}
+                            <div class="form-text">Separate tags with commas (e.g. beach, summer, vlog)</div>
+                        </div>
+
+
+
+                        <!-- Actions -->
+                        <div class="d-flex justify-content-between align-items-center pt-3">
+                            <a href="{% url 'home:vlogs' %}" class="btn btn-light rounded-pill px-4 fw-bold">Cancel</a>
+                            <button type="submit" class="btn btn-primary rounded-pill px-5 py-2 fw-bold shadow-sm">
+                                <i class="bi bi-cloud-arrow-up-fill me-2"></i>Upload Vlog
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Custom utility for non-Bootstrap styling needs */
+    .nav-pills .nav-link {
+        color: #6c757d;
+        background-color: transparent;
+        border: 1px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+    .nav-pills .nav-link:hover {
+        background-color: #f8f9fa;
+        color: #0d6efd;
+    }
+
+    .nav-pills .nav-link.active {
+        background-color: #0d6efd;
+        color: white;
+        box-shadow: 0 4px 6px rgba(13, 110, 253, 0.2);
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const uploadTab = document.getElementById('upload-tab');
+        const linkTab = document.getElementById('link-tab');
+        const fileInput = document.getElementById('{{ form.video_file.id_for_label }}');
+        const urlInput = document.getElementById('{{ form.video_url.id_for_label }}');
+
+        // Clear other input when switching tabs to avoid validation errors
+        // (optional enhancement, but good for UX)
+        uploadTab.addEventListener('shown.bs.tab', function () {
+            urlInput.value = '';
+        });
+
+        linkTab.addEventListener('shown.bs.tab', function () {
+            fileInput.value = '';
+        });
+
+        // Ensure form controls have Bootstrap classes
+        document.querySelectorAll('input, select, textarea').forEach(el => {
+            if (!el.classList.contains('form-check-input')) {
+                el.classList.add('form-control');
+            }
+            if (el.tagName === 'SELECT') {
+                el.classList.add('form-select');
+                el.classList.remove('form-control');
+            }
+        });
+    });
+</script>
+{% endblock %}

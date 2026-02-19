@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destination Details - Safar</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <!-- Remix Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        .dest-hero {
+            background-size: cover;
+            background-position: center;
+            color: var(--white);
+            padding: 100px 0;
+            position: relative;
+        }
+        .dest-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+        }
+        .dest-content {
+            position: relative;
+            z-index: 1;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+            margin-top: 60px;
+        }
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .food-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        .phrase-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: var(--radius);
+            margin-bottom: 10px;
+        }
+        .expense-box {
+            background: var(--white);
+            padding: 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+        .expense-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .pill {
+            background: rgba(255,255,255,0.2);
+            color: var(--white);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-right: 10px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="container">
+        <div class="logo">Safar<span style="color:var(--secondary)">.com</span></div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="planner.html">Plan Trip</a>
+            <a href="ai-guide.html">AI Guide</a>
+            <a href="profile.html"><i class="ri-user-line"></i> Profile</a>
+            <a href="login.html"><i class="ri-login-box-line"></i> Login</a>
+        </div>
+    </nav>
+
+    <!-- Destination Content -->
+    <div id="destContainer">
+        <!-- Content will be populated by JavaScript -->
+        <div class="container" style="padding: 50px; text-align: center;">
+            <i class="ri-loader-4-line" style="font-size: 48px; color: var(--primary); animation: spin 1s linear infinite;"></i>
+            <p style="margin-top: 20px; color: #666;">Loading destination details...</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer style="background: var(--dark); color: var(--white); padding: 40px 0; margin-top: auto;">
+        <div class="container" style="text-align: center;">
+            <p>&copy; 2026 Safar.com. Explore the world confidently.</p>
+        </div>
+    </footer>
+
+    <!-- Floating AI Chat -->
+    <a href="ai-guide.html" class="ai-fab" title="Chat with AI Guide">
+        <i class="ri-robot-2-line"></i>
+    </a>
+
+    <!-- Scripts -->
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+{% extends 'home/base.html' %}
+
+{% block title %}AI Travel Guide - Safar{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center mb-4">AI Travel Assistant</h1>
+            <p class="text-center text-muted mb-5">Get personalized travel recommendations and instant answers to your travel questions</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- Chat Interface -->
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-robot me-2"></i>AI Travel Guide</h5>
+                </div>
+                <div class="card-body" style="height: 500px; overflow-y: auto;" id="chatContainer">
+                    <div class="message ai-message mb-3">
+                        <div class="d-flex">
+                            <div class="avatar me-3">
+                                <i class="fas fa-robot text-primary"></i>
+                            </div>
+                            <div class="message-content">
+                                <div class="message-bubble">
+                                    <p class="mb-1">Hello! I'm your AI travel assistant. I can help you with:</p>
+                                    <ul class="mb-0">
+                                        <li>Destination recommendations</li>
+                                        <li>Travel itineraries</li>
+                                        <li>Budget planning</li>
+                                        <li>Local tips and insights</li>
+                                        <li>Weather and best time to visit</li>
+                                    </ul>
+                                    <p class="mb-0 mt-2">What would you like to know about your next trip?</p>
+                                </div>
+                                <small class="text-muted">AI Assistant</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <form id="chatForm">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="messageInput" placeholder="Ask me anything about travel..."
+                                   required>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Quick Suggestions -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <h5>Quick Questions:</h5>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button class="btn btn-outline-primary btn-sm quick-question" data-question="What's the best time to visit Kerala?">
+                            Best time for Kerala
+                        </button>
+                        <button class="btn btn-outline-primary btn-sm quick-question" data-question="Suggest a 5-day itinerary for Goa">
+                            Goa itinerary
+                        </button>
+                        <button class="btn btn-outline-primary btn-sm quick-question" data-question="Budget for a family trip to Rajasthan">
+                            Rajasthan budget
+                        </button>
+                        <button class="btn btn-outline-primary btn-sm quick-question" data-question="What are the must-try foods in Mumbai?">
+                            Mumbai food guide
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.message-bubble {
+    background: #f8f9fa;
+    padding: 12px 16px;
+    border-radius: 18px;
+    max-width: 80%;
+    position: relative;
+}
+
+.ai-message .message-bubble {
+    background: #e3f2fd;
+}
+
+.user-message {
+    justify-content: flex-end;
+}
+
+.user-message .message-bubble {
+    background: #007bff;
+    color: white;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+</style>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chatForm = document.getElementById('chatForm');
+    const messageInput = document.getElementById('messageInput');
+    const chatContainer = document.getElementById('chatContainer');
+
+    // Quick question buttons
+    document.querySelectorAll('.quick-question').forEach(button => {
+        button.addEventListener('click', function() {
+            messageInput.value = this.dataset.question;
+            chatForm.dispatchEvent(new Event('submit'));
+        });
+    });
+
+    // Chat form submission
+    chatForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const message = messageInput.value.trim();
+        if (!message) return;
+
+        // Add user message
+        addMessage(message, 'user');
+        messageInput.value = '';
+
+        // Simulate AI response (replace with actual AJAX call)
+        setTimeout(() => {
+            const responses = [
+                "That's a great question! Let me help you with that.",
+                "Based on your interests, I recommend checking out our destination guides.",
+                "I can provide you with detailed information about that destination.",
+                "Would you like me to create a custom itinerary for you?",
+                "Let me search our database for the best recommendations."
+            ];
+            const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+            addMessage(randomResponse, 'ai');
+        }, 1000);
+    });
+
+    function addMessage(text, type) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${type}-message mb-3`;
+
+        messageDiv.innerHTML = `
+            <div class="d-flex ${type === 'user' ? 'justify-content-end' : ''}">
+                ${type === 'ai' ? '<div class="avatar me-3"><i class="fas fa-robot text-primary"></i></div>' : ''}
+                <div class="message-content">
+                    <div class="message-bubble">${text}</div>
+                    <small class="text-muted">${type === 'ai' ? 'AI Assistant' : 'You'}</small>
+                </div>
+                ${type === 'user' ? '<div class="avatar ms-3"><i class="fas fa-user text-secondary"></i></div>' : ''}
+            </div>
+        `;
+
+        chatContainer.appendChild(messageDiv);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+});
+</script>
+{% endblock %}
+{% endblock %}

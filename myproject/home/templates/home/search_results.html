@@ -1,0 +1,141 @@
+{% extends 'home/base.html' %}
+
+{% block title %}Search Results - Safar{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center mb-4">Search Results</h1>
+
+            {% if query %}
+            <p class="text-center text-muted mb-4">Showing results for "<strong>{{ query }}</strong>"</p>
+            {% endif %}
+
+            <!-- Search Form -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="GET" class="row g-3">
+                        <div class="col-md-10">
+                            <input type="text" name="q" class="form-control form-control-lg"
+                                   placeholder="Search destinations, vlogs, food..." value="{{ query }}" required>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary btn-lg w-100">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results -->
+    {% if results %}
+        {% if results.destinations %}
+        <div class="row mb-5">
+            <div class="col-12">
+                <h3 class="mb-3">
+                    <i class="fas fa-map-marked-alt text-primary me-2"></i>
+                    Destinations ({{ results.destinations|length }})
+                </h3>
+                <div class="row">
+                    {% for destination in results.destinations %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card">
+                            <div class="row g-0">
+                                <div class="col-md-4">
+                                    <img src="{{ destination.state_image }}" class="img-fluid rounded-start"
+                                         alt="{{ destination.name }}" style="height: 120px; object-fit: cover;">
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h6 class="card-title">{{ destination.name }}</h6>
+                                        <p class="card-text">{{ destination.tagline }}</p>
+                                        <a href="{% url 'home:destination_detail' destination.pk %}" class="btn btn-sm btn-primary">View Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if results.vlogs %}
+        <div class="row mb-5">
+            <div class="col-12">
+                <h3 class="mb-3">
+                    <i class="fas fa-video text-success me-2"></i>
+                    Travel Vlogs ({{ results.vlogs|length }})
+                </h3>
+                <div class="row">
+                    {% for vlog in results.vlogs %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-title">{{ vlog.title }}</h6>
+                                <p class="card-text">{{ vlog.description|truncatechars:100 }}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">By {{ vlog.author.username }}</small>
+                                    <a href="{% url 'home:vlog_detail' vlog.pk %}" class="btn btn-sm btn-success">Watch</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if results.food_items %}
+        <div class="row mb-5">
+            <div class="col-12">
+                <h3 class="mb-3">
+                    <i class="fas fa-utensils text-warning me-2"></i>
+                    Local Cuisine ({{ results.food_items|length }})
+                </h3>
+                <div class="row">
+                    {% for food in results.food_items %}
+                    <div class="col-md-4 mb-3">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h6 class="card-title">{{ food.dish }}</h6>
+                                <p class="card-text">{{ food.description|truncatechars:80 }}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-secondary">{{ food.price }}</span>
+                                    {% if food.is_vegetarian %}
+                                    <span class="badge bg-success">Veg</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+    {% else %}
+        <!-- No Results -->
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="fas fa-search fa-4x text-muted mb-4"></i>
+                    <h3>No results found</h3>
+                    <p class="text-muted">Try different keywords or check your spelling.</p>
+                    <div class="mt-4">
+                        <a href="{% url 'home:index' %}" class="btn btn-primary me-2">Go Home</a>
+                        <a href="{% url 'home:destinations' %}" class="btn btn-outline-primary">Browse Destinations</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
